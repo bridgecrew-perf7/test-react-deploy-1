@@ -22,6 +22,10 @@ jobs:
       - name: test
         run: node -v
       - name: Build React App
-        run: npm install && npm run build
+        run: |
+          npm install
+          cp .env.example .env
+          sed -i 's#REACT_APP_API_URL.*#REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}#'
+          npm run build
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./build/ s3://testbuildscl --delete
